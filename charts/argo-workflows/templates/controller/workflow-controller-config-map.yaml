@@ -6,8 +6,8 @@ metadata:
     {{- include "argo-workflows.labels" (dict "context" . "component" .Values.controller.name "name" "cm") | nindent 4 }}
 data:
   config: |
-    {{- if .Values.server.navColor }}
-    navColor: {{ .Values.server.navColor }}
+    {{- with .Values.server.navColor }}
+    navColor: {{ . }}
     {{- end }}
     {{- if .Values.controller.instanceID.enabled }}
       {{- if .Values.controller.instanceID.useReleaseName }}
