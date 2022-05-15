@@ -62,7 +62,7 @@ If dashboard is installed by `--set dashboard.enabled=true`, checkout the argo-r
 | controller.affinity | object | `{}` | Assign custom [affinity] rules to the deployment |
 | controller.component | string | `"rollouts-controller"` | Value of label `app.kubernetes.io/component` |
 | controller.extraArgs | list | `[]` | Additional command line arguments to pass to rollouts-controller.  A list of flags. |
-| controller.extraContainers | list | `[]` | Literal yaml for extra containers to be added to controller deployment. |
+| controller.extraContainers | list | `[]` | Literal yaml for extra containers to be added to controller deployment. # Additional containers to add to the rollouts controller deployment # This will be rendered as the literal yaml |
 | controller.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | controller.image.registry | string | `"quay.io"` | Registry to use |
 | controller.image.repository | string | `"argoproj/argo-rollouts"` | Repository to use |
@@ -102,7 +102,7 @@ If dashboard is installed by `--set dashboard.enabled=true`, checkout the argo-r
 | dashboard.ingress.annotations | object | `{}` | Dashboard ingress annotations |
 | dashboard.ingress.enabled | bool | `false` | Enable dashboard ingress support |
 | dashboard.ingress.extraPaths | list | `[]` | Dashboard ingress extra paths |
-| dashboard.ingress.hosts | list | `[]` | Dashboard ingress hosts |
+| dashboard.ingress.hosts | list | `[]` | Dashboard ingress hosts # Argo Rollouts Dashboard Ingress. # Hostnames must be provided if Ingress is enabled. # Secrets must be manually created in the namespace |
 | dashboard.ingress.ingressClassName | string | `""` | Dashboard ingress class name |
 | dashboard.ingress.labels | object | `{}` | Dashboard ingress labels |
 | dashboard.ingress.pathType | string | `"Prefix"` | Dashboard ingress path type |

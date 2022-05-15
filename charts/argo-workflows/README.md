@@ -41,7 +41,7 @@ Fields to note:
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| createAggregateRoles | bool | `true` | Create clusterroles that extend existing clusterroles to interact with argo-cd crds |
+| createAggregateRoles | bool | `true` | Create clusterroles that extend existing clusterroles to interact with argo-cd crds # Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles |
 | fullnameOverride | string | `nil` | String to fully override "argo-workflows.fullname" template |
 | images.pullPolicy | string | `"Always"` | imagePullPolicy to apply to all containers |
 | images.pullSecrets | list | `[]` | Secrets with credentials to pull images from a private registry |
@@ -65,7 +65,7 @@ Fields to note:
 |-----|------|---------|-------------|
 | controller.affinity | object | `{}` | Assign custom [affinity] rules |
 | controller.clusterWorkflowTemplates.enabled | bool | `true` | Create a ClusterRole and CRB for the controller to access ClusterWorkflowTemplates. |
-| controller.containerRuntimeExecutor | string | `"emissary"` | Specifies the container runtime interface to use (one of: `docker`, `kubelet`, `k8sapi`, `pns`, `emissary`) |
+| controller.containerRuntimeExecutor | string | `"emissary"` | Specifies the container runtime interface to use (one of: `docker`, `kubelet`, `k8sapi`, `pns`, `emissary`) # Ref: https://argoproj.github.io/argo-workflows/workflow-executors/ |
 | controller.containerRuntimeExecutors | list | `[]` | Specifies the executor to use. This has precedence over `controller.containerRuntimeExecutor`. |
 | controller.deploymentAnnotations | object | `{}` | deploymentAnnotations is an optional map of annotations to be applied to the controller Deployment |
 | controller.extraArgs | list | `[]` | Extra arguments to be added to the controller |
@@ -75,10 +75,10 @@ Fields to note:
 | controller.image.repository | string | `"argoproj/workflow-controller"` | Registry to use for the controller |
 | controller.image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | controller.initialDelay | string | `nil` | Resolves ongoing, uncommon AWS EKS bug: https://github.com/argoproj/argo-workflows/pull/4224 |
-| controller.instanceID.enabled | bool | `false` | Configures the controller to filter workflow submissions to only those which have a matching instanceID attribute. |
+| controller.instanceID.enabled | bool | `false` | Configures the controller to filter workflow submissions to only those which have a matching instanceID attribute. # NOTE: If `instanceID.enabled` is set to `true` then either `instanceID.userReleaseName` # or `instanceID.explicitID` must be defined. |
 | controller.instanceID.explicitID | string | `""` | Use a custom instanceID |
 | controller.instanceID.useReleaseName | bool | `false` | Use ReleaseName as instanceID |
-| controller.links | list | `[]` | Configure Argo Server to show custom [links] |
+| controller.links | list | `[]` | Configure Argo Server to show custom [links] # Ref: https://argoproj.github.io/argo-workflows/links/ |
 | controller.livenessProbe | object | See [values.yaml] | Configure liveness [probe] for the controller |
 | controller.loadBalancerSourceRanges | list | `[]` | Source ranges to allow access to service from. Only applies to service type `LoadBalancer` |
 | controller.logging.globallevel | string | `"0"` | Set the glog logging level |
@@ -99,7 +99,7 @@ Fields to note:
 | controller.podLabels | object | `{}` | Optional labels to add to the controller pods |
 | controller.podSecurityContext | object | `{}` | SecurityContext to set on the controller pods |
 | controller.podWorkers | string | `nil` | Number of pod workers |
-| controller.priorityClassName | string | `""` | Leverage a PriorityClass to ensure your pods survive resource shortages. |
+| controller.priorityClassName | string | `""` | Leverage a PriorityClass to ensure your pods survive resource shortages. # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |
 | controller.rbac.create | bool | `true` | Adds Role and RoleBinding for the controller. |
 | controller.replicas | int | `1` | The number of controller pods to run |
 | controller.resourceRateLimit | object | `{}` | Globally limits the rate at which pods are created. This is intended to mitigate flooding of the Kubernetes API server by workflows with a large amount of parallel nodes. |
@@ -122,7 +122,7 @@ Fields to note:
 | controller.tolerations | list | `[]` | [Tolerations] for use with node taints |
 | controller.volumeMounts | list | `[]` | Additional volume mounts to the controller main container |
 | controller.volumes | list | `[]` | Additional volumes to the controller pod |
-| controller.workflowDefaults | object | `{}` | Default values that will apply to all Workflows from this controller, unless overridden on the Workflow-level. Only valid for 2.7+ |
+| controller.workflowDefaults | object | `{}` | Default values that will apply to all Workflows from this controller, unless overridden on the Workflow-level. Only valid for 2.7+ # See more: https://argoproj.github.io/argo-workflows/default-workflow-specs/ |
 | controller.workflowNamespaces | list | `["default"]` | Specify all namespaces where this workflow controller instance will manage workflows. This controls where the service account and RBAC resources will be created. Only valid when singleNamespace is false. |
 | controller.workflowRestrictions | object | `{}` | Restricts the Workflows that the controller will process. Only valid for 2.9+ |
 | controller.workflowWorkers | string | `nil` | Number of workflow workers |
@@ -143,7 +143,7 @@ Fields to note:
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | server.affinity | object | `{}` | Assign custom [affinity] rules |
-| server.baseHref | string | `"/"` | Value for base href in index.html. Used if the server is running behind reverse proxy under subpath different from /. |
+| server.baseHref | string | `"/"` | Value for base href in index.html. Used if the server is running behind reverse proxy under subpath different from /. # only updates base url of resources on client side, # it's expected that a proxy server rewrites the request URL and gets rid of this prefix # https://github.com/argoproj/argo-workflows/issues/716#issuecomment-433213190 |
 | server.clusterWorkflowTemplates.enableEditing | bool | `true` | Give the server permissions to edit ClusterWorkflowTemplates. |
 | server.clusterWorkflowTemplates.enabled | bool | `true` | Create a ClusterRole and CRB for the server to access ClusterWorkflowTemplates. |
 | server.deploymentAnnotations | object | `{}` | optional map of annotations to be applied to the ui Deployment |
@@ -157,7 +157,7 @@ Fields to note:
 | server.ingress.annotations | object | `{}` | Additional ingress annotations |
 | server.ingress.enabled | bool | `false` | Enable an ingress resource |
 | server.ingress.extraPaths | list | `[]` | Additional ingress paths |
-| server.ingress.hosts | list | `[]` | List of ingress hosts |
+| server.ingress.hosts | list | `[]` | List of ingress hosts # Hostnames must be provided if Ingress is enabled. # Secrets must be manually created in the namespace |
 | server.ingress.ingressClassName | string | `""` | Defines which ingress controller will implement the resource |
 | server.ingress.labels | object | `{}` | Additional ingress labels |
 | server.ingress.pathType | string | `"Prefix"` | Ingress path type. One of `Exact`, `Prefix` or `ImplementationSpecific` |
@@ -171,11 +171,11 @@ Fields to note:
 | server.podAnnotations | object | `{}` | optional map of annotations to be applied to the ui Pods |
 | server.podLabels | object | `{}` | Optional labels to add to the UI pods |
 | server.podSecurityContext | object | `{}` | SecurityContext to set on the server pods |
-| server.priorityClassName | string | `""` | Leverage a PriorityClass to ensure your pods survive resource shortages |
+| server.priorityClassName | string | `""` | Leverage a PriorityClass to ensure your pods survive resource shortages # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/ |
 | server.rbac.create | bool | `true` | Adds Role and RoleBinding for the server. |
 | server.replicas | int | `1` | The number of server pods to run |
 | server.resources | object | `{}` | Resource limits and requests for the server |
-| server.secure | bool | `false` | Run the argo server in "secure" mode. Configure this value instead of `--secure` in extraArgs. |
+| server.secure | bool | `false` | Run the argo server in "secure" mode. Configure this value instead of `--secure` in extraArgs. # See the following documentation for more details on secure mode: # https://argoproj.github.io/argo-workflows/tls/ |
 | server.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":false,"runAsNonRoot":true}` | Servers container-level security context |
 | server.serviceAccount.annotations | object | `{}` | Annotations applied to created service account |
 | server.serviceAccount.create | bool | `true` | Create a service account for the server |
